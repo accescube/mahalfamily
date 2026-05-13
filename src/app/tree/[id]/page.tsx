@@ -217,9 +217,9 @@ export default function FamilyTreePage() {
 
       const findSpouseInList = (id: string) => {
         const m = uniqueMarriages.find(x => x.husbandId === id || x.wifeId === id);
-        if (!m) return null;
+        if (!m) return undefined;
         const spouseId = m.husbandId === id ? m.wifeId : m.husbandId;
-        return allFetchedMembers.find(fm => fm.id === spouseId) || null;
+        return allFetchedMembers.find(fm => fm.id === spouseId);
       };
 
       if (finalRootMother && !finalRootFather) {
