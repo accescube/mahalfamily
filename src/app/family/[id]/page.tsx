@@ -136,11 +136,17 @@ function FamilyDetailContent({ params }: { params: Promise<{ id: string }> }) {
           if (chunk.length === 0) continue;
           const q = query(collection(db, "members"), where("familyId", "in", chunk));
           const querySnapshot = await getDocs(q);
-          querySnapshot.forEach((doc) => fetchedMembers.push({ id: doc.id, ...doc.data() } as Member));
+          querySnapshot.forEach((doc) => {
+            const { id: _, ...dataWithoutId } = doc.data() as Member;
+            fetchedMembers.push({ id: doc.id, ...dataWithoutId });
+          });
       }
       const mSnap = await getDocs(collection(db, "marriages"));
       const fetchedMarriages: Marriage[] = [];
-      mSnap.forEach((doc) => fetchedMarriages.push({ id: doc.id, ...doc.data() } as Marriage));
+      mSnap.forEach((doc) => {
+        const { id: _, ...dataWithoutId } = doc.data() as Marriage;
+        fetchedMarriages.push({ id: doc.id, ...dataWithoutId });
+      });
       setMarriages(fetchedMarriages);
 
       // Fetch spouses that belong to other families but are connected to members of this family
@@ -435,7 +441,8 @@ function FamilyDetailContent({ params }: { params: Promise<{ id: string }> }) {
           data.mahalName?.toLowerCase().includes(searchSpouseMahal.toLowerCase());
 
         if (matchesName && matchesMahal) {
-          results.push({ id: doc.id, ...data });
+          const { id: _, ...dataWithoutId } = data;
+          results.push({ id: doc.id, ...dataWithoutId });
         }
       });
       

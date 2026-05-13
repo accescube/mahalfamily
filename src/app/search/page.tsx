@@ -69,7 +69,8 @@ function SearchContent() {
         const querySnapshot = await getDocs(q);
         const fetchedFamilies: Family[] = [];
         querySnapshot.forEach((doc) => {
-          fetchedFamilies.push({ id: doc.id, ...doc.data() } as Family);
+          const { id: _, ...dataWithoutId } = doc.data() as Family;
+          fetchedFamilies.push({ id: doc.id, ...dataWithoutId });
         });
         setFamilies(fetchedFamilies);
       } else {
@@ -78,7 +79,8 @@ function SearchContent() {
         const querySnapshot = await getDocs(q);
         const fetchedMembers: Member[] = [];
         querySnapshot.forEach((doc) => {
-          fetchedMembers.push({ id: doc.id, ...doc.data() } as Member);
+          const { id: _, ...dataWithoutId } = doc.data() as Member;
+          fetchedMembers.push({ id: doc.id, ...dataWithoutId });
         });
         setMembers(fetchedMembers);
       }
