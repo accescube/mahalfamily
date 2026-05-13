@@ -156,8 +156,8 @@ function FamilyDetailContent({ params }: { params: Promise<{ id: string }> }) {
           const sDoc = await getDoc(doc(db, "members", sId));
           if (sDoc.exists()) {
              const spouseData = sDoc.data() as Member;
-             // Push to fetchedMembers to display them on the family page
-             fetchedMembers.push({ id: sDoc.id, ...spouseData, relation: "Connected Spouse" });
+             const { id: _, ...spouseDataWithoutId } = spouseData;
+             fetchedMembers.push({ id: sDoc.id, ...spouseDataWithoutId, relation: "Connected Spouse" });
           }
       }
 
