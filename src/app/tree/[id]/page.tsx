@@ -243,7 +243,10 @@ export default function FamilyTreePage() {
           const chunk = spouseArray.slice(i, i + 30);
           const sq = query(collection(db, "members"), where("__name__", "in", chunk));
           const sSnap = await getDocs(sq);
-          sSnap.docs.forEach(d => fullMembersList.push({ id: d.id, ...d.data() } as Member));
+          sSnap.docs.forEach(d => {
+            const { id: _, ...mFields } = d.data() as Member;
+            fullMembersList.push({ id: d.id, ...mFields });
+          });
         }
       }
 

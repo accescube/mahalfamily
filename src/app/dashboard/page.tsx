@@ -44,20 +44,29 @@ export default function DashboardPage() {
           familiesQ = query(collection(db, "families"), where("createdBy", "==", user.id));
         }
         const familiesSnap = await getDocs(familiesQ);
-        const fetchedFamilies = familiesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const fetchedFamilies = familiesSnap.docs.map(d => {
+          const { id: _, ...data } = d.data() as any;
+          return { id: d.id, ...data };
+        });
         setFamilies(fetchedFamilies);
 
         // 2. Fetch Users (if Admin)
         if (isAdmin) {
           const usersSnap = await getDocs(collection(db, "users"));
-          setAllUsers(usersSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+          setAllUsers(usersSnap.docs.map(d => {
+            const { id: _, ...data } = d.data() as any;
+            return { id: d.id, ...data };
+          }));
         }
 
         // 3. Pending Queue
         if (isApprover) {
           const pendingQ = query(collection(db, "families"), where("isApproved", "==", false));
           const pendingSnap = await getDocs(pendingQ);
-          setPendingFamilies(pendingSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+          setPendingFamilies(pendingSnap.docs.map(d => {
+            const { id: _, ...data } = d.data() as any;
+            return { id: d.id, ...data };
+          }));
         }
 
         setStats({

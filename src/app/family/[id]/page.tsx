@@ -110,7 +110,8 @@ function FamilyDetailContent({ params }: { params: Promise<{ id: string }> }) {
       const familyDoc = await getDoc(doc(db, "families", familyId));
       let isGrandFam = false;
       if (familyDoc.exists()) {
-          const famData = { id: familyDoc.id, ...familyDoc.data() } as Family;
+          const { id: _, ...fData } = familyDoc.data() as Family;
+          const famData = { id: familyDoc.id, ...fData };
           setFamily(famData);
           isGrandFam = famData.isGrandFamily === true;
           
@@ -118,7 +119,10 @@ function FamilyDetailContent({ params }: { params: Promise<{ id: string }> }) {
              const gfQ = query(collection(db, "members"), where("familyId", "==", famData.grandFamilyId));
              const gfSnap = await getDocs(gfQ);
              const gfMembers: Member[] = [];
-             gfSnap.forEach(d => gfMembers.push({ id: d.id, ...d.data() } as Member));
+             gfSnap.forEach(d => {
+               const { id: _, ...mFields } = d.data() as Member;
+               gfMembers.push({ id: d.id, ...mFields });
+             });
              setGrandFamilyMembers(gfMembers);
           }
       }
