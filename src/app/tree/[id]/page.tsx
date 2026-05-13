@@ -67,7 +67,8 @@ export default function FamilyTreePage() {
       // 1. Fetch Family
       const familyDoc = await getDoc(doc(db, "families", familyId));
       if (!familyDoc.exists()) return;
-      const familyData = { id: familyDoc.id, ...familyDoc.data() } as Family;
+      const { id: _, ...fData } = familyDoc.data() as Family;
+      const familyData = { id: familyDoc.id, ...fData };
       setFamily(familyData);
 
       // 2. Cluster Fetching (Exhaustive)
@@ -92,7 +93,8 @@ export default function FamilyTreePage() {
           const q = query(collection(db, "members"), where("familyId", "in", chunk));
           const snap = await getDocs(q);
           snap.forEach(d => {
-            const m = { id: d.id, ...d.data() } as Member;
+            const { id: _, ...mFields } = d.data() as Member;
+            const m = { id: d.id, ...mFields };
             if (!clusterMembers.find(ex => ex.id === m.id)) {
                 clusterMembers.push(m);
             }
@@ -108,7 +110,8 @@ export default function FamilyTreePage() {
               const pq = query(collection(db, "members"), where("__name__", "in", chunk));
               const pSnap = await getDocs(pq);
               pSnap.forEach(d => {
-                const m = { id: d.id, ...d.data() } as Member;
+                const { id: _, ...mFields } = d.data() as Member;
+                const m = { id: d.id, ...mFields };
                 if (!clusterMembers.find(ex => ex.id === m.id)) {
                     clusterMembers.push(m);
                 }
@@ -186,13 +189,13 @@ export default function FamilyTreePage() {
           const [s1, s2] = await Promise.all([getDocs(m1), getDocs(m2)]);
           
           s1.docs.forEach(d => {
-            const data = d.data() as Marriage;
-            if (data.husbandId !== data.wifeId) marriagesList.push({ id: d.id, ...data });
+            const { id: _, ...mFields } = d.data() as Marriage;
+            if (mFields.husbandId !== mFields.wifeId) marriagesList.push({ id: d.id, ...mFields });
           });
           s2.docs.forEach(d => {
-            const data = d.data() as Marriage;
-            if (data.husbandId !== data.wifeId && !marriagesList.find(m => m.id === d.id)) {
-                marriagesList.push({ id: d.id, ...data });
+            const { id: _, ...mFields } = d.data() as Marriage;
+            if (mFields.husbandId !== mFields.wifeId && !marriagesList.find(m => m.id === d.id)) {
+                marriagesList.push({ id: d.id, ...mFields });
             }
           });
         }
