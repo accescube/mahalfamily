@@ -195,7 +195,8 @@ function FamilyDetailContent({ params }: { params: Promise<{ id: string }> }) {
                      else if (pRel === "Grandchild") displayRelation = "Great-Grandchild";
                  }
                  
-                 fetchedMembers.push({ id: doc.id, ...childData, relation: displayRelation });
+                 const { id: _, ...childDataWithoutId } = childData;
+                 fetchedMembers.push({ id: doc.id, ...childDataWithoutId, relation: displayRelation });
              }
           });
       }
