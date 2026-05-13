@@ -59,7 +59,8 @@ export default function DirectoryTree() {
       const mahals: Record<string, any[]> = {};
       
       snap.docs.forEach(doc => {
-        const family = { id: doc.id, ...doc.data() };
+        const familyData = doc.data() as { mahalName: string; familyName: string };
+        const family = { id: doc.id, ...familyData };
         const mName = family.mahalName || "Unknown Mahal";
         if (!mahals[mName]) mahals[mName] = [];
         mahals[mName].push(family);
